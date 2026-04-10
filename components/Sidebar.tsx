@@ -25,7 +25,7 @@ const menuItems = [
   { href: "/mesajlar",          label: "Mesajlaşma",        icon: MessageSquare,   color: "bg-yellow-500/20 text-yellow-400" },
 ];
 
-export default function Sidebar({ onClose }: { onClose?: () => void }) {
+export default function Sidebar() {
   const pathname = usePathname();
 
   return (
@@ -35,11 +35,6 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
           <h1 className="text-xl font-bold text-blue-400">UNIGARDEN</h1>
           <p className="text-xs text-gray-400 mt-0.5">Muhasebe Paneli</p>
         </div>
-        {onClose && (
-          <button onClick={onClose} className="md:hidden p-1 text-gray-400 hover:text-white">
-            <X size={18} />
-          </button>
-        )}
       </div>
       <nav className="flex-1 overflow-y-auto p-4 space-y-1">
         {menuItems.map(({ href, label, icon: Icon, color }) => {
