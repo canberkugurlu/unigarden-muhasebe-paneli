@@ -41,6 +41,7 @@ model Konut {
   aidatlar        Aidat[]
   servisFaturalari ServisFaturasi[]
   teslimRaporlari TeslimRaporu[]
+  etapFaturalari  EtapFatura[]
 }
 
 model Ogrenci {
@@ -87,6 +88,7 @@ model Sozlesme {
   olusturmaTar    DateTime @default(now())
   odemeler        Odeme[]
   oda             String?
+  kisiSayisi      Int      @default(1)
 }
 
 model Odeme {
@@ -285,6 +287,25 @@ model GunlukOdeme {
   eslestirildi  Boolean  @default(false)
   importTarihi  DateTime @default(now())
   importDosya   String?
+}
+
+// ─── 1. Etap Utility Faturaları ────────────────────────────────────────────────
+
+model EtapFatura {
+  id           String   @id @default(cuid())
+  konutId      String
+  konut        Konut    @relation(fields: [konutId], references: [id])
+  yil          Int
+  ay           Int
+  elektrik     Float    @default(0)
+  su           Float    @default(0)
+  dogalgaz     Float    @default(0)
+  internet     Float    @default(0)
+  kotaEsigi    Float    @default(1150)
+  aciklama     String?
+  olusturmaTar DateTime @default(now())
+
+  @@unique([konutId, yil, ay])
 }
 
 model Kullanici {

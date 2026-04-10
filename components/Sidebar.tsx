@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   CreditCard,
-  Receipt,
   Wrench,
   ClipboardList,
   Fingerprint,
   MessageSquare,
   Upload,
+  Zap,
   X,
 } from "lucide-react";
 
@@ -18,6 +18,7 @@ const menuItems = [
   { href: "/",                  label: "Ana Panel",         icon: LayoutDashboard, color: "bg-blue-500/20 text-blue-400" },
   { href: "/odeme-import",      label: "Ödeme İmport",      icon: Upload,          color: "bg-green-500/20 text-green-400" },
   { href: "/aidatlar",          label: "Aidatlar",          icon: CreditCard,      color: "bg-purple-500/20 text-purple-400" },
+  { href: "/etap-faturalar",    label: "1. Etap Faturaları", icon: Zap,            color: "bg-yellow-500/20 text-yellow-400" },
   { href: "/servis-faturalari", label: "Servis Faturaları", icon: Wrench,          color: "bg-orange-500/20 text-orange-400" },
   { href: "/teslim-raporlari",  label: "Teslim Raporları",  icon: ClipboardList,   color: "bg-cyan-500/20 text-cyan-400" },
   { href: "/turnike",           label: "Turnike Logları",   icon: Fingerprint,     color: "bg-red-500/20 text-red-400" },
