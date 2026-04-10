@@ -286,3 +286,17 @@ model GunlukOdeme {
   importTarihi  DateTime @default(now())
   importDosya   String?
 }
+
+model Kullanici {
+  id           String   @id @default(cuid())
+  ad           String
+  soyad        String
+  email        String   @unique
+  sifre        String
+  rol          String   // "Admin" | "Muhasebeci" | "Teknik" | "Guvenlik" | "KiralamaSorumlusu"
+  telefon      String?
+  aktif        Boolean  @default(true)
+  notlar       String?
+  sonGiris     DateTime?
+  olusturmaTar DateTime @default(now())
+}

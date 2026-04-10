@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 const titles: Record<string, string> = {
   "/": "Ana Panel",
@@ -14,7 +15,13 @@ const titles: Record<string, string> = {
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const title = titles[pathname] ?? "Muhasebe Paneli";
+
+  const cikisYap = async () => {
+    await fetch("/api/auth", { method: "DELETE" });
+    router.push("/giris");
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
@@ -27,6 +34,14 @@ export default function Header() {
           <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
           Muhasebe
         </div>
+        <button
+          onClick={cikisYap}
+          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-600 transition-colors px-2 py-1.5 rounded-lg hover:bg-red-50"
+          title="Çıkış Yap"
+        >
+          <LogOut size={14} />
+          Çıkış
+        </button>
       </div>
     </header>
   );
