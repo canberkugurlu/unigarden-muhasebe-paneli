@@ -15,13 +15,13 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-  { href: "/", label: "Ana Panel", icon: LayoutDashboard },
-  { href: "/odeme-import", label: "Ödeme İmport", icon: Upload },
-  { href: "/aidatlar", label: "Aidatlar", icon: CreditCard },
-  { href: "/servis-faturalari", label: "Servis Faturaları", icon: Wrench },
-  { href: "/teslim-raporlari", label: "Teslim Raporları", icon: ClipboardList },
-  { href: "/turnike", label: "Turnike Logları", icon: Fingerprint },
-  { href: "/mesajlar", label: "Mesajlaşma", icon: MessageSquare },
+  { href: "/",                  label: "Ana Panel",         icon: LayoutDashboard, color: "bg-blue-500/20 text-blue-400" },
+  { href: "/odeme-import",      label: "Ödeme İmport",      icon: Upload,          color: "bg-green-500/20 text-green-400" },
+  { href: "/aidatlar",          label: "Aidatlar",          icon: CreditCard,      color: "bg-purple-500/20 text-purple-400" },
+  { href: "/servis-faturalari", label: "Servis Faturaları", icon: Wrench,          color: "bg-orange-500/20 text-orange-400" },
+  { href: "/teslim-raporlari",  label: "Teslim Raporları",  icon: ClipboardList,   color: "bg-cyan-500/20 text-cyan-400" },
+  { href: "/turnike",           label: "Turnike Logları",   icon: Fingerprint,     color: "bg-red-500/20 text-red-400" },
+  { href: "/mesajlar",          label: "Mesajlaşma",        icon: MessageSquare,   color: "bg-yellow-500/20 text-yellow-400" },
 ];
 
 export default function Sidebar({ onClose }: { onClose?: () => void }) {
@@ -41,19 +41,21 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
         )}
       </div>
       <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-        {menuItems.map(({ href, label, icon: Icon }) => {
+        {menuItems.map(({ href, label, icon: Icon, color }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                 active
                   ? "bg-blue-600 text-white"
                   : "text-gray-300 hover:bg-gray-800 hover:text-white"
               }`}
             >
-              <Icon size={18} />
+              <span className={`p-1.5 rounded-md shrink-0 ${active ? "bg-white/20 text-white" : color}`}>
+                <Icon size={15} />
+              </span>
               {label}
             </Link>
           );
