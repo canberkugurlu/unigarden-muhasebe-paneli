@@ -24,8 +24,12 @@ export default function GirisPage() {
     if (res.ok) {
       router.push("/");
     } else {
-      const j = await res.json();
-      setHata(j.error ?? "Giriş başarısız.");
+      try {
+        const j = await res.json();
+        setHata(j.error ?? "Giriş başarısız.");
+      } catch {
+        setHata("Giriş başarısız.");
+      }
     }
   };
 
