@@ -74,8 +74,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetch("/api/dashboard")
-      .then((r) => r.json())
-      .then(setData);
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d && !d.error) setData(d); })
+      .catch(() => {});
   }, []);
 
   const buAy = new Date().toLocaleDateString("tr-TR", { month: "long", year: "numeric" });

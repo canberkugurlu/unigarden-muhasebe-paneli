@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
+  try {
   const bugun = new Date();
   const yil = bugun.getFullYear();
   const ay = bugun.getMonth() + 1;
@@ -60,4 +61,8 @@ export async function GET() {
       odenenAdet: aylikAidatOdenen._count,
     },
   });
+  } catch (e) {
+    console.error("[dashboard]", e);
+    return NextResponse.json({ error: "DB bağlantı hatası" }, { status: 500 });
+  }
 }
