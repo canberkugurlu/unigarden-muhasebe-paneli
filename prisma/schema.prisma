@@ -1,0 +1,288 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model DaireSahibi {
+  id             String             @id @default(cuid())
+  ad             String
+  soyad          String
+  tcKimlik       String             @unique
+  telefon        String
+  email          String?
+  notlar         String?
+  sifre          String?
+  olusturmaTar   DateTime           @default(now())
+  konutlar       Konut[]
+  bakimYorumlari BakimTalebiYorum[]
+  belgeler       Belge[]
+}
+
+model Konut {
+  id             String        @id @default(cuid())
+  blok           String
+  katNo          Int
+  daireNo        String        @unique
+  tip            String
+  metrekare      Float
+  kiraBedeli     Float
+  durum          String        @default("Bos")
+  ozellikler     String?
+  etap           Int           @default(1)
+  daireSahibiId  String?
+  daireSahibi    DaireSahibi?  @relation(fields: [daireSahibiId], references: [id])
+  olusturmaTar   DateTime      @default(now())
+  sozlesmeler     Sozlesme[]
+  bakimTalepleri  BakimTalebi[]
+  belgeler        Belge[]
+  aidatlar        Aidat[]
+  servisFaturalari ServisFaturasi[]
+  teslimRaporlari TeslimRaporu[]
+}
+
+model Ogrenci {
+  id             String        @id @default(cuid())
+  ad             String
+  soyad          String
+  tcKimlik       String?       @unique
+  ogrenciNo      String?
+  universite     String?
+  bolum          String?
+  telefon        String
+  email          String?       @unique
+  acilKisi       String?
+  acilTelefon    String?
+  notlar         String?
+  sifre          String?
+  cinsiyet       String?
+  kimlikBelgesi  String?
+  ogrenciBelgesi String?
+  olusturmaTar   DateTime      @default(now())
+  sozlesmeler     Sozlesme[]
+  bakimTalepleri  BakimTalebi[]
+  teslimRaporlari TeslimRaporu[]
+  turnikeLoglari  TurnikeLog[]
+  turnikeEngeli   TurnikeEngel?
+  gunlukOdemeler  GunlukOdeme[]
+}
+
+model Sozlesme {
+  id              String   @id @default(cuid())
+  sozlesmeNo      String   @unique
+  konutId         String
+  konut           Konut    @relation(fields: [konutId], references: [id])
+  ogrenciId       String
+  ogrenci         Ogrenci  @relation(fields: [ogrenciId], references: [id])
+  baslangicTarihi DateTime
+  bitisTarihi     DateTime
+  aylikKira       Float
+  depozito        Float
+  kiraOdemGunu    Int      @default(1)
+  ozelSartlar     String?
+  durum           String   @default("Aktif")
+  imzaTarihi      DateTime @default(now())
+  olusturmaTar    DateTime @default(now())
+  odemeler        Odeme[]
+  oda             String?
+}
+
+model Odeme {
+  id           String   @id @default(cuid())
+  sozlesmeId   String
+  sozlesme     Sozlesme @relation(fields: [sozlesmeId], references: [id])
+  tutar        Float
+  tip          String
+  odenmeTarihi DateTime
+  aciklama     String?
+  olusturmaTar DateTime @default(now())
+}
+
+model Tedarikci {
+  id           String   @id @default(cuid())
+  ad           String
+  telefon      String
+  email        String?
+  kategori     String
+  notlar       String?
+  olusturmaTar DateTime @default(now())
+}
+
+model Gider {
+  id           String   @id @default(cuid())
+  baslik       String
+  tutar        Float
+  kategori     String
+  tarih        DateTime
+  aciklama     String?
+  olusturmaTar DateTime @default(now())
+}
+
+model BakimTalebi {
+  id            String             @id @default(cuid())
+  baslik        String
+  aciklama      String
+  durum         String             @default("Bekliyor")
+  oncelik       String             @default("Normal")
+  olusturmaTar  DateTime           @default(now())
+  tamamlanmaTar DateTime?
+  ogrenciId     String
+  ogrenci       Ogrenci            @relation(fields: [ogrenciId], references: [id])
+  konutId       String
+  konut         Konut              @relation(fields: [konutId], references: [id])
+  yorumlar         BakimTalebiYorum[]
+  servisFaturalari ServisFaturasi[]
+}
+
+model BakimTalebiYorum {
+  id            String       @id @default(cuid())
+  icerik        String
+  yazarTip      String       // "Admin" | "EvSahibi"
+  yazarId       String
+  yazarAd       String
+  olusturmaTar  DateTime     @default(now())
+  bakimTalebiId String
+  bakimTalebi   BakimTalebi  @relation(fields: [bakimTalebiId], references: [id])
+  daireSahibiId String?
+  daireSahibi   DaireSahibi? @relation(fields: [daireSahibiId], references: [id])
+}
+
+model Belge {
+  id            String      @id @default(cuid())
+  ad            String
+  tip           String      @default("Diger")
+  dosyaYolu     String
+  olusturmaTar  DateTime    @default(now())
+  yukleyenTip   String      // "Admin" | "EvSahibi"
+  yukleyenId    String
+  konutId       String
+  konut         Konut       @relation(fields: [konutId], references: [id])
+  daireSahibiId String?
+  daireSahibi   DaireSahibi? @relation(fields: [daireSahibiId], references: [id])
+}
+
+model KullaniciIzin {
+  id           String   @id @default(cuid())
+  kullaniciTip String   // "Kiraci" | "EvSahibi"
+  kullaniciId  String
+  izinler      String   // JSON: { sayfalar: string[], eylemler: string[] }
+  guncelleTar  DateTime @default(now())
+
+  @@unique([kullaniciTip, kullaniciId])
+}
+
+model Duyuru {
+  id       String   @id @default(cuid())
+  baslik   String
+  icerik   String
+  tarih    DateTime @default(now())
+  hedef    String   @default("Tumu")
+  yayinda  Boolean  @default(true)
+}
+
+// ─── Muhasebe Modülleri ────────────────────────────────────────────────────────
+
+model Aidat {
+  id           String   @id @default(cuid())
+  konutId      String
+  konut        Konut    @relation(fields: [konutId], references: [id])
+  yil          Int
+  ay           Int      // 1-12
+  tutar        Float
+  durum        String   @default("Bekliyor") // "Bekliyor" | "Odendi" | "Gecikti"
+  odemeTarihi  DateTime?
+  aciklama     String?
+  olusturmaTar DateTime @default(now())
+}
+
+model ServisFaturasi {
+  id            String      @id @default(cuid())
+  konutId       String
+  konut         Konut       @relation(fields: [konutId], references: [id])
+  bakimTalebiId String?
+  bakimTalebi   BakimTalebi? @relation(fields: [bakimTalebiId], references: [id])
+  baslik        String
+  tutar         Float
+  kategori      String      // "Teknik" | "Temizlik" | "Guvenlik" | "Diger"
+  tarih         DateTime
+  durum         String      @default("Bekliyor") // "Bekliyor" | "Odendi"
+  odemeTarihi   DateTime?
+  dosyaYolu     String?
+  aciklama      String?
+  olusturmaTar  DateTime    @default(now())
+}
+
+model TeslimRaporu {
+  id            String   @id @default(cuid())
+  konutId       String
+  konut         Konut    @relation(fields: [konutId], references: [id])
+  ogrenciId     String?
+  ogrenci       Ogrenci? @relation(fields: [ogrenciId], references: [id])
+  tip           String   // "Giris" | "Cikis"
+  tarih         DateTime
+  durumNotu     String?
+  hasarlar      String?  // JSON array
+  toplamTutar   Float    @default(0)
+  dosyaYolu     String?
+  onaylandi     Boolean  @default(false)
+  olusturmaTar  DateTime @default(now())
+}
+
+model TurnikeLog {
+  id           String   @id @default(cuid())
+  ogrenciId    String
+  ogrenci      Ogrenci  @relation(fields: [ogrenciId], references: [id])
+  yon          String   // "Giris" | "Cikis"
+  zaman        DateTime @default(now())
+  kapi         String   @default("Ana Kapi")
+  engellendi   Boolean  @default(false)
+  aciklama     String?
+}
+
+model TurnikeEngel {
+  id           String   @id @default(cuid())
+  ogrenciId    String   @unique
+  ogrenci      Ogrenci  @relation(fields: [ogrenciId], references: [id])
+  neden        String
+  engelleyen   String   // Muhasebe kullanıcı adı
+  tarih        DateTime @default(now())
+  aktif        Boolean  @default(true)
+}
+
+model Mesaj {
+  id           String       @id @default(cuid())
+  gonderen     String       // kullanıcı adı / rol
+  gonderenTip  String       // "Muhasebe" | "Guvenlik" | "Teknik" | "Yonetim"
+  konu         String
+  icerik       String
+  olusturmaTar DateTime     @default(now())
+  alicilar     MesajAlici[]
+}
+
+model MesajAlici {
+  id        String  @id @default(cuid())
+  mesajId   String
+  mesaj     Mesaj   @relation(fields: [mesajId], references: [id])
+  alici     String  // kullanıcı adı / rol
+  aliciTip  String  // "Muhasebe" | "Guvenlik" | "Teknik" | "Yonetim"
+  okundu    Boolean @default(false)
+  okunmaTar DateTime?
+}
+
+model GunlukOdeme {
+  id            String   @id @default(cuid())
+  ogrenciId     String?
+  ogrenci       Ogrenci? @relation(fields: [ogrenciId], references: [id])
+  ogrenciAd     String   // CSV'den gelen ham isim
+  konutNo       String?
+  tutar         Float
+  tip           String   // "Kira" | "Aidat" | "Servis" | "Diger"
+  odenmeTarihi  DateTime
+  banka         String?
+  aciklama      String?
+  eslestirildi  Boolean  @default(false)
+  importTarihi  DateTime @default(now())
+  importDosya   String?
+}
