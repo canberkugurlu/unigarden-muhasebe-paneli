@@ -50,14 +50,14 @@ export default function OdemeImportPage() {
     setYukleniyor(true);
     const params = filtre === "eslestirilmedi" ? "?eslestirildi=false" : "";
     const r = await fetch(`/api/odeme-import${params}`);
-    setOdemeler(await r.json());
+    setOdemeler(r.ok ? await r.json() : null);
     setYukleniyor(false);
   }, [filtre]);
 
   useEffect(() => { yukle(); }, [yukle]);
 
   useEffect(() => {
-    fetch("/api/ogrenciler").then((r) => r.json()).then(setOgrenciler);
+    fetch("/api/ogrenciler").then((r) => r.ok ? r.json() : null).then(setOgrenciler);
   }, []);
 
   function dosyaOku(e: React.ChangeEvent<HTMLInputElement>) {
@@ -102,6 +102,7 @@ export default function OdemeImportPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ kayitlar: onizleme }),
     });
+    if (!r.ok) return;
     const data = await r.json();
     setOnizleme(null);
     setDosyaAd("");

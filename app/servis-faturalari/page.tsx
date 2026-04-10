@@ -55,13 +55,13 @@ export default function ServisFaturalariPage() {
     if (durumFiltre) params.set("durum", durumFiltre);
     if (kategoriFiltre) params.set("kategori", kategoriFiltre);
     const r = await fetch(`/api/servis-faturalari?${params}`);
-    setFaturalar(await r.json());
+    setFaturalar(r.ok ? await r.json() : null);
   }, [durumFiltre, kategoriFiltre]);
 
   useEffect(() => { yukle(); }, [yukle]);
 
   useEffect(() => {
-    fetch("/api/konutlar").then((r) => r.json()).then(setKonutlar);
+    fetch("/api/konutlar").then((r) => r.ok ? r.json() : null).then(setKonutlar);
   }, []);
 
   async function kaydet() {

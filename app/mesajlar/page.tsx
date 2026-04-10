@@ -37,8 +37,8 @@ export default function MesajlarPage() {
 
   const yukle = useCallback(async () => {
     const [g, gi] = await Promise.all([
-      fetch("/api/mesajlar?tip=gelen").then((r) => r.json()),
-      fetch("/api/mesajlar?tip=giden").then((r) => r.json()),
+      fetch("/api/mesajlar?tip=gelen").then((r) => r.ok ? r.json() : null),
+      fetch("/api/mesajlar?tip=giden").then((r) => r.ok ? r.json() : null),
     ]);
     setGelenler(g);
     setGidenler(gi);

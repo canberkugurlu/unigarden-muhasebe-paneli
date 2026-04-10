@@ -32,18 +32,18 @@ export default function TurnikePage() {
 
   const yukleLoglar = useCallback(async () => {
     const r = await fetch("/api/turnike?limit=200");
-    setLoglar(await r.json());
+    setLoglar(r.ok ? await r.json() : null);
   }, []);
 
   const yukleEngeller = useCallback(async () => {
     const r = await fetch("/api/turnike/engel");
-    setEngeller(await r.json());
+    setEngeller(r.ok ? await r.json() : null);
   }, []);
 
   useEffect(() => {
     yukleLoglar();
     yukleEngeller();
-    fetch("/api/ogrenciler").then((r) => r.json()).then(setOgrenciler);
+    fetch("/api/ogrenciler").then((r) => r.ok ? r.json() : null).then(setOgrenciler);
   }, [yukleLoglar, yukleEngeller]);
 
   async function engelEkle() {

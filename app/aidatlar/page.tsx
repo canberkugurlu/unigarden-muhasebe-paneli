@@ -44,6 +44,7 @@ export default function AidatlarPage() {
   const yukle = useCallback(async () => {
     setYukleniyor(true);
     const r = await fetch(`/api/aidatlar?yil=${yil}&ay=${ay}`);
+    if (!r.ok) return;
     const data = await r.json();
     setAidatlar(data);
     setYukleniyor(false);
@@ -62,6 +63,7 @@ export default function AidatlarPage() {
         tutarSabit: tutarSabit ? parseFloat(tutarSabit) : undefined,
       }),
     });
+    if (!r.ok) return;
     const data = await r.json();
     setBorcModal(false);
     setTutarSabit("");

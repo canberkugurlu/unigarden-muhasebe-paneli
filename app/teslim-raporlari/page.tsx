@@ -72,6 +72,7 @@ function FotoYukle({
     const fd = new FormData();
     files.forEach((f) => fd.append("files", f));
     const r = await fetch("/api/upload", { method: "POST", body: fd });
+    if (!r.ok) return;
     const data = await r.json();
     onUploaded(data.urls ?? []);
     setYukleniyor(false);
@@ -122,14 +123,14 @@ export default function TeslimRaporlariPage() {
     const params = new URLSearchParams();
     if (tipFiltre) params.set("tip", tipFiltre);
     const r = await fetch(`/api/teslim-raporlari?${params}`);
-    setRaporlar(await r.json());
+    setRaporlar(r.ok ? await r.json() : null);
   }, [tipFiltre]);
 
   useEffect(() => { yukle(); }, [yukle]);
 
   useEffect(() => {
-    fetch("/api/konutlar").then((r) => r.json()).then(setKonutlar);
-    fetch("/api/ogrenciler").then((r) => r.json()).then(setOgrenciler);
+    fetch("/api/konutlar").then((r) => r.ok ? r.json() : null).then(setKonutlar);
+    fetch("/api/ogrenciler").then((r) => r.ok ? r.json() : null).then(setOgrenciler);
   }, []);
 
   function hasarEkle() {
