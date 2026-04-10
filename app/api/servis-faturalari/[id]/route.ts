@@ -5,17 +5,27 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const body = await req.json();
-  const fatura = await prisma.servisFaturasi.update({ where: { id }, data: body });
-  return NextResponse.json(fatura);
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const fatura = await prisma.servisFaturasi.update({ where: { id }, data: body });
+    return NextResponse.json(fatura);
+  } catch (e) {
+    console.error('[API Error]', e);
+    return NextResponse.json({ error: 'Sunucu hatası' }, { status: 500 });
+  }
 }
 
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  await prisma.servisFaturasi.delete({ where: { id } });
-  return NextResponse.json({ ok: true });
+  try {
+    const { id } = await params;
+    await prisma.servisFaturasi.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error('[API Error]', e);
+    return NextResponse.json({ error: 'Sunucu hatası' }, { status: 500 });
+  }
 }
