@@ -13,7 +13,6 @@ export default function GirisPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.email || !form.sifre) { setHata("E-posta ve şifre zorunludur."); return; }
     setLoading(true); setHata("");
     const res = await fetch("/api/auth", {
       method: "POST",
