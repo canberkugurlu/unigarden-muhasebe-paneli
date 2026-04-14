@@ -14,6 +14,7 @@ import {
   Zap,
   X,
   History,
+  CheckSquare,
 } from "lucide-react";
 
 const menuItems = [
@@ -26,6 +27,7 @@ const menuItems = [
   { href: "/turnike",           label: "Turnike Logları",   icon: Fingerprint,     color: "bg-red-500/20 text-red-400" },
   { href: "/mesajlar",          label: "Mesajlaşma",        icon: MessageSquare,   color: "bg-yellow-500/20 text-yellow-400" },
   { href: "/islemler",          label: "Geçmiş İşlemler",   icon: History,         color: "bg-slate-500/20 text-slate-400" },
+  { href: "/gorevlerim", label: "Görevlerim", icon: CheckSquare, color: "bg-blue-500/20 text-blue-400" },
 ];
 
 export default function Sidebar() {

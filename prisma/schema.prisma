@@ -350,3 +350,70 @@ model IslemLog {
   @@index([targetType, targetId])
   @@index([kullaniciId])
 }
+
+model Senaryo {
+  id            String   @id @default(cuid())
+  ad            String
+  aciklama      String?
+  hedefModel    String
+  tetikleyici   String?
+  aktif         Boolean  @default(true)
+  olusturanId   String?
+  olusturanAd   String?
+  olusturmaTar  DateTime @default(now())
+  adimlar       SenaryoAdim[]
+  akislar       SenaryoAkisi[]
+  @@index([hedefModel])
+  @@index([aktif])
+}
+model SenaryoAdim {
+  id           String   @id @default(cuid())
+  senaryoId    String
+  senaryo      Senaryo  @relation(fields: [senaryoId], references: [id], onDelete: Cascade)
+  sira         Int
+  ad           String
+  aciklama     String?
+  panel        String
+  rol          String?
+  aksiyon      String
+  sartFieldYol String?
+  olusturmaTar DateTime @default(now())
+  akisAdimlari SenaryoAkisiAdim[]
+  @@index([senaryoId, sira])
+}
+model SenaryoAkisi {
+  id             String   @id @default(cuid())
+  senaryoId      String
+  senaryo        Senaryo  @relation(fields: [senaryoId], references: [id])
+  baslik         String
+  hedefModel     String
+  hedefId        String?
+  durum          String   @default("Aktif")
+  baslayanId     String?
+  baslayanAd     String?
+  aktifSira      Int      @default(1)
+  baslamaTar     DateTime @default(now())
+  bitirmeTar     DateTime?
+  notlar         String?
+  adimlar        SenaryoAkisiAdim[]
+  @@index([durum])
+  @@index([senaryoId])
+  @@index([hedefModel, hedefId])
+}
+model SenaryoAkisiAdim {
+  id                String    @id @default(cuid())
+  akisId            String
+  akis              SenaryoAkisi @relation(fields: [akisId], references: [id], onDelete: Cascade)
+  adimId            String
+  adim              SenaryoAdim  @relation(fields: [adimId], references: [id])
+  sira              Int
+  durum             String    @default("Beklemede")
+  yapanKullaniciId  String?
+  yapanAd           String?
+  yapanPanel        String?
+  yapilanTar        DateTime?
+  notlar            String?
+  olusturmaTar      DateTime  @default(now())
+  @@index([akisId, sira])
+  @@index([durum])
+}
