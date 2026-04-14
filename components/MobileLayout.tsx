@@ -11,7 +11,7 @@ import ThemeToggle from "./ThemeToggle";
 
 // ── Tüm menü ──
 const ALL_ITEMS = [
-  { href: "/",                  label: "Ana Panel",          icon: LayoutDashboard, color: "bg-blue-500",   textColor: "text-blue-600"   },
+  { href: "/",                  label: "Dashboard",          icon: LayoutDashboard, color: "bg-blue-500",   textColor: "text-blue-600"   },
   { href: "/odeme-import",      label: "Ödeme İmport",       icon: Upload,          color: "bg-green-500",  textColor: "text-green-600"  },
   { href: "/aidatlar",          label: "Aidatlar",           icon: CreditCard,      color: "bg-purple-500", textColor: "text-purple-600" },
   { href: "/etap-faturalar",    label: "1. Etap Faturaları", icon: Zap,             color: "bg-yellow-500", textColor: "text-yellow-600" },
