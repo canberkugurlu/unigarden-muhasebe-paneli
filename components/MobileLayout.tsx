@@ -31,7 +31,8 @@ const BOTTOM_ITEMS = [
 export default function MobileLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [menuAcik, setMenuAcik] = useState(false);
+  const [menuAcik, setMenuAcik]       = useState(false); // Daha Fazla bottom sheet
+  const [drawerAcik, setDrawerAcik]   = useState(false); // Sol kenar drawer (hamburger)
 
   const aktifItem = ALL_ITEMS.find(i => i.href === pathname);
   const baslik = aktifItem?.label ?? "Muhasebe";
@@ -45,23 +46,34 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
   return (
     <div className="md:hidden flex flex-col h-screen bg-gray-50 overflow-hidden">
       {/* ── Top App Bar ── */}
-      <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 pt-[env(safe-area-inset-top)] shrink-0 shadow-md">
-        <div className="flex items-center justify-between h-14">
-          <div className="flex items-center gap-3 min-w-0">
-            {!isRoot ? (
-              <button onClick={() => router.back()} className="p-1 -ml-1 rounded-full hover:bg-white/10 active:bg-white/20 transition-colors">
-                <ArrowLeft size={22} />
-              </button>
-            ) : (
-              <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center">
-                <span className="text-sm font-bold">UG</span>
-              </div>
-            )}
-            <div className="min-w-0">
-              <h1 className="font-semibold text-base truncate">{baslik}</h1>
-              {isRoot && <p className="text-[11px] text-blue-100 -mt-0.5">Muhasebe Paneli</p>}
+      <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 pt-[env(safe-area-inset-top)] shrink-0 shadow-md">
+        <div className="flex items-center gap-2 h-14">
+          {/* Hamburger */}
+          <button onClick={() => setDrawerAcik(true)}
+                  className="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition-colors"
+                  title="Menü">
+            <Menu size={22} />
+          </button>
+
+          {/* Geri oku (alt sayfalarda) ya da logo */}
+          {!isRoot ? (
+            <button onClick={() => router.back()}
+                    className="p-1.5 rounded-full hover:bg-white/10 active:bg-white/20 transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center shrink-0">
+              <span className="text-xs font-bold">UG</span>
             </div>
+          )}
+
+          {/* Başlık */}
+          <div className="flex-1 min-w-0 px-1">
+            <h1 className="font-semibold text-base truncate leading-tight">{baslik}</h1>
+            {isRoot && <p className="text-[11px] text-blue-100 leading-tight">Muhasebe Paneli</p>}
           </div>
+
+          {/* Çıkış */}
           <button onClick={cikisYap} className="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition-colors" title="Çıkış">
             <LogOut size={20} />
           </button>
@@ -128,12 +140,72 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
         </div>
       )}
 
+      {/* ── Side Drawer (Hamburger) ── */}
+      {drawerAcik && (
+        <div className="fixed inset-0 z-50 flex" onClick={() => setDrawerAcik(false)}>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <aside onClick={(e) => e.stopPropagation()}
+                 className="relative w-72 max-w-[85%] h-full bg-gray-900 text-white flex flex-col shadow-2xl animate-slide-right">
+            {/* Drawer Header */}
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 px-5 pt-[calc(env(safe-area-inset-top)+1rem)] pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
+                    <span className="text-sm font-bold">UG</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">UNIGARDEN</p>
+                    <p className="text-[11px] text-blue-100">Muhasebe Paneli</p>
+                  </div>
+                </div>
+                <button onClick={() => setDrawerAcik(false)} className="p-1.5 rounded-full hover:bg-white/10">
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Menu List */}
+            <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
+              {ALL_ITEMS.map(({ href, label, icon: Icon, color }) => {
+                const active = pathname === href;
+                return (
+                  <Link key={href} href={href} onClick={() => setDrawerAcik(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                      active ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}>
+                    <span className={`w-8 h-8 rounded-lg ${color} flex items-center justify-center text-white shadow-sm shrink-0`}>
+                      <Icon size={16} />
+                    </span>
+                    <span className="flex-1">{label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Drawer Footer */}
+            <div className="p-3 border-t border-gray-700/60 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
+              <button onClick={cikisYap}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-colors">
+                <LogOut size={16} />
+                Çıkış Yap
+              </button>
+              <p className="text-[10px] text-gray-500 mt-2 px-3">v1.0.0 &copy; {new Date().getFullYear()} Unigarden</p>
+            </div>
+          </aside>
+        </div>
+      )}
+
       <style jsx global>{`
         @keyframes slide-up {
           from { transform: translateY(100%); }
           to   { transform: translateY(0); }
         }
-        .animate-slide-up { animation: slide-up 220ms ease-out; }
+        @keyframes slide-right {
+          from { transform: translateX(-100%); }
+          to   { transform: translateX(0); }
+        }
+        .animate-slide-up    { animation: slide-up    220ms ease-out; }
+        .animate-slide-right { animation: slide-right 240ms ease-out; }
       `}</style>
     </div>
   );
