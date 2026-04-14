@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logIslem } from "@/lib/log";
 
 export async function GET(req: NextRequest) {
   try {
@@ -51,11 +52,23 @@ export async function POST(req: NextRequest) {
         }));
 
       await prisma.aidat.createMany({ data: yeniAidatlar });
+      await logIslem({
+        modul: "aidat", eylem: "BULK_IMPORT",
+        baslik: `Toplu aidat oluşturuldu (${yeniAidatlar.length} kayıt) — ${yil}/${ay}`,
+        detay: `Tutar: ${tutarSabit ?? "kira × %10"}`,
+        sonrakiVeri: { yil, ay, tutarSabit, count: yeniAidatlar.length },
+      });
       return NextResponse.json({ olusturulan: yeniAidatlar.length });
     }
 
     // Tekil oluşturma
     const aidat = await prisma.aidat.create({ data: body });
+    await logIslem({
+      modul: "aidat", eylem: "CREATE",
+      baslik: `Aidat oluşturuldu: ${aidat.yil}/${aidat.ay} (₺${aidat.tutar})`,
+      targetType: "Aidat", targetId: aidat.id,
+      sonrakiVeri: aidat,
+    });
     return NextResponse.json(aidat);
   } catch (e) {
     console.error('[API Error]', e);

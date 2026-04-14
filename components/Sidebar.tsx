@@ -12,6 +12,7 @@ import {
   Upload,
   Zap,
   X,
+  History,
 } from "lucide-react";
 
 const menuItems = [
@@ -23,6 +24,7 @@ const menuItems = [
   { href: "/teslim-raporlari",  label: "Teslim Raporları",  icon: ClipboardList,   color: "bg-cyan-500/20 text-cyan-400" },
   { href: "/turnike",           label: "Turnike Logları",   icon: Fingerprint,     color: "bg-red-500/20 text-red-400" },
   { href: "/mesajlar",          label: "Mesajlaşma",        icon: MessageSquare,   color: "bg-yellow-500/20 text-yellow-400" },
+  { href: "/islemler",          label: "Geçmiş İşlemler",   icon: History,         color: "bg-slate-500/20 text-slate-400" },
 ];
 
 export default function Sidebar() {

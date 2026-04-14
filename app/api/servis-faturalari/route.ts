@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logIslem } from "@/lib/log";
 
 export async function GET(req: NextRequest) {
   try {
@@ -31,6 +32,12 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const fatura = await prisma.servisFaturasi.create({ data: body });
+    await logIslem({
+      modul: "servis-faturasi", eylem: "CREATE",
+      baslik: `Servis faturası eklendi: ${fatura.aciklama ?? ""} (₺${fatura.tutar})`,
+      targetType: "ServisFaturasi", targetId: fatura.id,
+      sonrakiVeri: fatura,
+    });
     return NextResponse.json(fatura);
   } catch (e) {
     console.error('[API Error]', e);

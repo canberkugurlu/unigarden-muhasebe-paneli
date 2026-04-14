@@ -321,3 +321,32 @@ model Kullanici {
   sonGiris     DateTime?
   olusturmaTar DateTime @default(now())
 }
+
+model IslemLog {
+  id             String   @id @default(cuid())
+  kullaniciId    String?
+  kullaniciAd    String?
+  kullaniciTip   String?
+  panel          String
+  modul          String
+  eylem          String
+  baslik         String
+  detay          String?
+  targetType     String?
+  targetId       String?
+  oncekiVeri     String?
+  sonrakiVeri    String?
+  geriAlindi     Boolean  @default(false)
+  geriAlinmaTar  DateTime?
+  geriAlanId     String?
+  geriAlanAd     String?
+  ipAdres        String?
+  olusturmaTar   DateTime @default(now())
+
+  @@index([panel])
+  @@index([eylem])
+  @@index([modul])
+  @@index([olusturmaTar])
+  @@index([targetType, targetId])
+  @@index([kullaniciId])
+}

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutDashboard, CreditCard, Wrench, ClipboardList, Fingerprint,
-  MessageSquare, Upload, Zap, LogOut, Menu, X, ArrowLeft,
+  MessageSquare, Upload, Zap, LogOut, Menu, X, ArrowLeft, History,
 } from "lucide-react";
 
 // ── Tüm menü ──
@@ -18,6 +18,7 @@ const ALL_ITEMS = [
   { href: "/teslim-raporlari",  label: "Teslim Raporları",   icon: ClipboardList,   color: "bg-cyan-500",   textColor: "text-cyan-600"   },
   { href: "/turnike",           label: "Turnike Logları",    icon: Fingerprint,     color: "bg-red-500",    textColor: "text-red-600"    },
   { href: "/mesajlar",          label: "Mesajlaşma",         icon: MessageSquare,   color: "bg-amber-500",  textColor: "text-amber-600"  },
+  { href: "/islemler",          label: "Geçmiş İşlemler",    icon: History,         color: "bg-slate-500",  textColor: "text-slate-600"  },
 ];
 
 // ── Alt navigasyon (4 ana) ──

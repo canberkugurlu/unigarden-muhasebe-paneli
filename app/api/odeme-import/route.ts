@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logIslem } from "@/lib/log";
 
 export async function GET(req: NextRequest) {
   try {
@@ -61,6 +62,14 @@ export async function POST(req: NextRequest) {
       })),
     });
 
+    const dosya = kayitlar[0]?.importDosya ?? "Excel";
+    const toplam = kayitlar.reduce((s: number, k: { tutar: number }) => s + Number(k.tutar || 0), 0);
+    await logIslem({
+      modul: "odeme-import", eylem: "BULK_IMPORT",
+      baslik: `Ödeme importu: ${kayitlar.length} kayıt — ${dosya}`,
+      detay: `Toplam tutar: ₺${toplam.toLocaleString("tr-TR")}`,
+      sonrakiVeri: { count: kayitlar.length, toplam, dosya },
+    });
     return NextResponse.json({ eklenen: kayitlar.length });
   } catch (e) {
     console.error('[API Error]', e);
