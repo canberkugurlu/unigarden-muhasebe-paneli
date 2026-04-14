@@ -40,8 +40,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Kayıt yok" }, { status: 400 });
     }
 
-    await prisma.gunlukOdeme.createMany({
-      data: kayitlar.map((k: {
+    // Bireysel create() ile ID'leri yakala (geri alma için)
+    const olusturulan = await prisma.$transaction(
+      kayitlar.map((k: {
         ogrenciAd: string;
         konutNo?: string;
         tutar: number;
@@ -50,17 +51,19 @@ export async function POST(req: NextRequest) {
         banka?: string;
         aciklama?: string;
         importDosya?: string;
-      }) => ({
-        ogrenciAd: k.ogrenciAd,
-        konutNo: k.konutNo ?? null,
-        tutar: Number(k.tutar),
-        tip: k.tip ?? "Kira",
-        odenmeTarihi: new Date(k.odenmeTarihi),
-        banka: k.banka ?? null,
-        aciklama: k.aciklama ?? null,
-        importDosya: k.importDosya ?? null,
-      })),
-    });
+      }) => prisma.gunlukOdeme.create({
+        data: {
+          ogrenciAd: k.ogrenciAd,
+          konutNo: k.konutNo ?? null,
+          tutar: Number(k.tutar),
+          tip: k.tip ?? "Kira",
+          odenmeTarihi: new Date(k.odenmeTarihi),
+          banka: k.banka ?? null,
+          aciklama: k.aciklama ?? null,
+          importDosya: k.importDosya ?? null,
+        },
+      }))
+    );
 
     const dosya = kayitlar[0]?.importDosya ?? "Excel";
     const toplam = kayitlar.reduce((s: number, k: { tutar: number }) => s + Number(k.tutar || 0), 0);
@@ -68,7 +71,7 @@ export async function POST(req: NextRequest) {
       modul: "odeme-import", eylem: "BULK_IMPORT",
       baslik: `Ödeme importu: ${kayitlar.length} kayıt — ${dosya}`,
       detay: `Toplam tutar: ₺${toplam.toLocaleString("tr-TR")}`,
-      sonrakiVeri: { count: kayitlar.length, toplam, dosya },
+      sonrakiVeri: { count: kayitlar.length, toplam, dosya, ids: olusturulan.map(o => o.id) },
     });
     return NextResponse.json({ eklenen: kayitlar.length });
   } catch (e) {

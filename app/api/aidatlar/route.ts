@@ -51,12 +51,14 @@ export async function POST(req: NextRequest) {
           durum: "Bekliyor",
         }));
 
-      await prisma.aidat.createMany({ data: yeniAidatlar });
+      const olusturulan = await prisma.$transaction(
+        yeniAidatlar.map(d => prisma.aidat.create({ data: d }))
+      );
       await logIslem({
         modul: "aidat", eylem: "BULK_IMPORT",
         baslik: `Toplu aidat oluşturuldu (${yeniAidatlar.length} kayıt) — ${yil}/${ay}`,
         detay: `Tutar: ${tutarSabit ?? "kira × %10"}`,
-        sonrakiVeri: { yil, ay, tutarSabit, count: yeniAidatlar.length },
+        sonrakiVeri: { yil, ay, tutarSabit, count: yeniAidatlar.length, ids: olusturulan.map(o => o.id) },
       });
       return NextResponse.json({ olusturulan: yeniAidatlar.length });
     }
