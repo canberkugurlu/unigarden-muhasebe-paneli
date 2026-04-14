@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "./ThemeToggle";
 import {
   LayoutDashboard,
   CreditCard,
@@ -59,8 +60,9 @@ export default function Sidebar() {
           );
         })}
       </nav>
-      <div className="p-4 border-t border-gray-700 text-xs text-gray-500">
-        v1.0.0 &copy; {new Date().getFullYear()} Unigarden
+      <div className="p-3 border-t border-gray-700 flex items-center justify-between">
+        <span className="text-[10px] text-gray-500">v1.0.0 &copy; {new Date().getFullYear()}</span>
+        <ThemeToggle className="!text-gray-400 hover:!bg-gray-800" />
       </div>
     </aside>
   );

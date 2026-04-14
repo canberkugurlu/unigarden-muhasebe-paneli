@@ -7,6 +7,7 @@ import {
   LayoutDashboard, CreditCard, Wrench, ClipboardList, Fingerprint,
   MessageSquare, Upload, Zap, LogOut, Menu, X, ArrowLeft, History,
 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 // ── Tüm menü ──
 const ALL_ITEMS = [
@@ -74,7 +75,8 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
             {isRoot && <p className="text-[11px] text-blue-100 leading-tight">Muhasebe Paneli</p>}
           </div>
 
-          {/* Çıkış */}
+          {/* Tema + Çıkış */}
+          <ThemeToggle className="!text-white hover:!bg-white/10" />
           <button onClick={cikisYap} className="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition-colors" title="Çıkış">
             <LogOut size={20} />
           </button>
