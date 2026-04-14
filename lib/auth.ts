@@ -12,6 +12,8 @@ export interface MuhasebePanelPayload {
   soyad: string;
   email: string;
   rol: string;
+  impersonatorId?: string;
+  impersonatorAd?: string;
 }
 
 export async function signToken(payload: MuhasebePanelPayload): Promise<string> {

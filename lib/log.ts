@@ -21,20 +21,24 @@ export interface LogParams {
 export async function logIslem(p: LogParams): Promise<void> {
   try {
     const session = await getSession().catch(() => null);
+    const impersonator = session?.impersonatorAd ? ` (Admin ${session.impersonatorAd} adına)` : "";
+    const detayEk = session?.impersonatorAd
+      ? `${p.detay ? p.detay + " | " : ""}Impersonator: ${session.impersonatorAd} (id: ${session.impersonatorId})`
+      : (p.detay ?? null);
     await prisma.islemLog.create({
       data: {
         panel:        p.panel ?? "muhasebe",
         modul:        p.modul,
         eylem:        p.eylem,
-        baslik:       p.baslik,
-        detay:        p.detay        ?? null,
+        baslik:       p.baslik + impersonator,
+        detay:        detayEk,
         targetType:   p.targetType   ?? null,
         targetId:     p.targetId     ?? null,
         oncekiVeri:   p.oncekiVeri   != null ? JSON.stringify(p.oncekiVeri)   : null,
         sonrakiVeri:  p.sonrakiVeri  != null ? JSON.stringify(p.sonrakiVeri)  : null,
         kullaniciId:  session?.id    ?? null,
         kullaniciAd:  session ? `${session.ad} ${session.soyad}` : null,
-        kullaniciTip: "Muhasebe",
+        kullaniciTip: session?.impersonatorAd ? "Muhasebe (impersonated)" : "Muhasebe",
       },
     });
   } catch (e) {
