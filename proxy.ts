@@ -6,7 +6,7 @@ const SECRET = new TextEncoder().encode(
 );
 const COOKIE = "muhasebe_token";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get(COOKIE)?.value;
 
